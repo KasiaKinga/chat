@@ -3,17 +3,18 @@ import { View, StyleSheet } from "react-native";
 import Chat from "../components/Chat";
 import Room from "../components/Room";
 
-const StudyRoomScreen = () => {
+const StudyRoomScreen = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false);
-  // console.log("typing..", isTyping);
+  // const [users, setUsers] = useState([]);
+  const myself = navigation.state.params.me.name;
 
   return (
     <View style={styles.container}>
       <View style={styles.containerForRoom}>
-        <Room isTyping={isTyping} />
+        <Room isTyping={isTyping} myself={myself} />
       </View>
       <View style={styles.containerForChat}>
-        <Chat setIsTyping={setIsTyping}/>
+        <Chat setIsTyping={setIsTyping} />
       </View>
     </View>
   );

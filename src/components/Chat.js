@@ -116,15 +116,17 @@ export default function Chat(props) {
 
   async function sendTypingAction(event) {
     // WRITE TYPING ACTION IN FIRESTORE FROM HERE
-
-    if (event.length !== 0) {
-      // SEND BEGINNGING TO TYPING TO FIRESTORE
+    if (event.length === 1) {
       await typingActionRef.add({
         name: user.name,
         typing: true,
         // save time in miliseconds
         createdAt: new Date().getTime(),
       });
+    }
+    if (event.length !== 0) {
+      // SEND BEGINNGING TO TYPING TO FIRESTORE
+
       setIsTyping(true);
     }
   }

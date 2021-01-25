@@ -136,8 +136,8 @@ export default (props) => {
     // setMyPosition(myPosition);
   }
 
-  const { isTyping, myself } = props;
-  console.log("myself", myself);
+  const { myself } = props;
+  // console.log("myself", myself);
   const icons = {
     Cat: require("../../assets/cat.png"),
     Doggy: require("../../assets/dog.png"),
@@ -159,7 +159,7 @@ export default (props) => {
                   name={myself}
                   location={positions[myself]}
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
-                  isTyping={isTyping}
+                  // isTyping={isTyping}
                   iconImg={icons[myself]}
                 />
               );
@@ -170,7 +170,7 @@ export default (props) => {
                   name={user.name}
                   location={positions[user.name]}
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
-                  isTyping={isTyping}
+                  // isTyping={isTyping}
                   iconImg={icons[user.name]}
                 />
               );

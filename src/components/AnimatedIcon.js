@@ -1,14 +1,14 @@
 import React, { Component, useEffect, useState } from "react";
 import {
-  // Platform,
   StyleSheet,
-  // Text,
   View,
   Animated,
   TouchableWithoutFeedback,
   Image,
   ImageBackground,
 } from "react-native";
+import { TypingAnimation } from "react-native-typing-animation";
+
 
 //// firebase
 import * as firebase from "firebase";
@@ -34,6 +34,7 @@ const typingActionRef = db.collection("typingAction");
 
 export default (props) => {
   const [isTyping, setIsTyping] = useState(false);
+  console.log(isTyping);
 
   useEffect(() => {
     //// LITENING CHANGING THE LOCATION
@@ -51,6 +52,7 @@ export default (props) => {
 
       // access the most recent move
       const returnedUserActions = usersFirestore.pop();
+
       if (returnedUserActions !== undefined) {
         if (props.name === returnedUserActions.name) {
           // props.location bind the animation instance with the 'icon'
@@ -76,12 +78,20 @@ export default (props) => {
           const userTyping = doc.data();
           // console.log("HERE userTyping", userTyping);
           return userTyping;
-        });
-      // console.log("heeeereee userTypingFirestore", userTypingFirestore);
-      if (props.name === userTypingFirestore[0].name) {
-        setIsTyping(userTypingFirestore[0].typing);
-      }
+        })
+        .sort((a, b) => a.createdAt - b.createdAt);
+      // we want the lastest action
 
+      // access the most recent move
+      const returnedTypingAction = userTypingFirestore.pop();
+      // console.log("returnObj", returnedTypingAction);
+      if (returnedTypingAction !== undefined) {
+        // console.log("hi");
+        if (props.name === returnedTypingAction.name) {
+          setIsTyping(returnedTypingAction.typing);
+          // console.log("AAAAAAA", returnedTypingAction.typing);
+        }
+      }
       // we want the lastest action
       // .sort((a, b) => a.createdAt - b.createdAt);
 
@@ -102,16 +112,32 @@ export default (props) => {
       // appendUsers(usersFirestore);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsubscribeTyping();
+    };
   }, []);
 
   const { location, iconImg } = props;
   // getLayout gives current location for element
   return (
     <Animated.View style={location.getLayout()}>
+      {isTyping && (
+        <TypingAnimation
+          dotColor="black"
+          dotMargin={3}
+          dotAmplitude={3}
+          dotSpeed={0.09}
+          dotRadius={2.5}
+          dotX={12}
+          dotY={6}
+          style={styles.cloud}
+        />
+      )}
       <Image
         source={iconImg}
-        style={[isTyping ? styles.imageWithTyping : styles.image]}
+        style={styles.image}
+        // style={[isTyping ? styles.imageWithTyping : styles.image]}
       />
     </Animated.View>
   );
@@ -137,5 +163,14 @@ const styles = StyleSheet.create({
     width: 70,
     borderWidth: 3,
     borderColor: "red",
+  },
+  cloud: {
+    backgroundColor: "white",
+    width: 30,
+    height: 20,
+    borderRadius: 8,
+    marginLeft: 70,
+    marginTop: -10,
+    position: "absolute",
   },
 });

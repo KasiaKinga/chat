@@ -47,15 +47,17 @@ export default (props) => {
 
       // access the most recent move
       const returnedUserActions = usersFirestore.pop();
-      if (props.name === returnedUserActions.name) {
-        Animated.timing(props.location, {
-          toValue: {
-            x: returnedUserActions.locationX,
-            y: returnedUserActions.locationY,
-          },
-          duration: 1000,
-          useNativeDriver: false,
-        }).start();
+      if (returnedUserActions !== undefined) {
+        if (props.name === returnedUserActions.name) {
+          Animated.timing(props.location, {
+            toValue: {
+              x: returnedUserActions.locationX,
+              y: returnedUserActions.locationY,
+            },
+            duration: 1000,
+            useNativeDriver: false,
+          }).start();
+        }
       }
 
       console.log("usersFirestore", usersFirestore);

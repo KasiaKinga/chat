@@ -1,14 +1,14 @@
 import React, { Component, useEffect, useState } from "react";
 import {
-  // Platform,
   StyleSheet,
-  // Text,
   View,
   Animated,
   TouchableWithoutFeedback,
   Image,
   ImageBackground,
 } from "react-native";
+import { TypingAnimation } from "react-native-typing-animation";
+
 
 //// firebase
 import * as firebase from "firebase";
@@ -122,9 +122,22 @@ export default (props) => {
   // getLayout gives current location for element
   return (
     <Animated.View style={location.getLayout()}>
+      {isTyping && (
+        <TypingAnimation
+          dotColor="black"
+          dotMargin={3}
+          dotAmplitude={3}
+          dotSpeed={0.09}
+          dotRadius={2.5}
+          dotX={12}
+          dotY={6}
+          style={styles.cloud}
+        />
+      )}
       <Image
         source={iconImg}
-        style={[isTyping ? styles.imageWithTyping : styles.image]}
+        style={styles.image}
+        // style={[isTyping ? styles.imageWithTyping : styles.image]}
       />
     </Animated.View>
   );
@@ -150,5 +163,14 @@ const styles = StyleSheet.create({
     width: 70,
     borderWidth: 3,
     borderColor: "red",
+  },
+  cloud: {
+    backgroundColor: "white",
+    width: 30,
+    height: 20,
+    borderRadius: 8,
+    marginLeft: 70,
+    marginTop: -10,
+    position: "absolute",
   },
 });

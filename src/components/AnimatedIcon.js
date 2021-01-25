@@ -34,6 +34,7 @@ const typingActionRef = db.collection("typingAction");
 
 export default (props) => {
   const [isTyping, setIsTyping] = useState(false);
+  console.log(isTyping);
 
   useEffect(() => {
     //// LITENING CHANGING THE LOCATION
@@ -51,6 +52,7 @@ export default (props) => {
 
       // access the most recent move
       const returnedUserActions = usersFirestore.pop();
+
       if (returnedUserActions !== undefined) {
         if (props.name === returnedUserActions.name) {
           // props.location bind the animation instance with the 'icon'
@@ -76,12 +78,20 @@ export default (props) => {
           const userTyping = doc.data();
           // console.log("HERE userTyping", userTyping);
           return userTyping;
-        });
-      // console.log("heeeereee userTypingFirestore", userTypingFirestore);
-      if (props.name === userTypingFirestore[0].name) {
-        setIsTyping(userTypingFirestore[0].typing);
-      }
+        })
+        .sort((a, b) => a.createdAt - b.createdAt);
+      // we want the lastest action
 
+      // access the most recent move
+      const returnedTypingAction = userTypingFirestore.pop();
+      // console.log("returnObj", returnedTypingAction);
+      if (returnedTypingAction !== undefined) {
+        // console.log("hi");
+        if (props.name === returnedTypingAction.name) {
+          setIsTyping(returnedTypingAction.typing);
+          // console.log("AAAAAAA", returnedTypingAction.typing);
+        }
+      }
       // we want the lastest action
       // .sort((a, b) => a.createdAt - b.createdAt);
 
@@ -102,7 +112,10 @@ export default (props) => {
       // appendUsers(usersFirestore);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsubscribeTyping();
+    };
   }, []);
 
   const { location, iconImg } = props;

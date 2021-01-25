@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   // Platform,
   StyleSheet,
@@ -32,14 +32,24 @@ if (firebase.apps.length === 0) {
 const db = firebase.firestore();
 // chat collection reference (we interact with reference in useEffect)
 const usersRef = db.collection("users");
+const userActionsRef = db.collection("userActions");
 
 export default (props) => {
   // console.log("props", props);
   // export default class App extends Component {
   // not state! instance of animation
   const [users, setUsers] = useState([]);
+
+  const myPosition = useRef(new Animated.ValueXY(0, 0)).current;
+  const theirPositions = useRef(new Animated.ValueXY(0, 0)).current;
+
+  const positions = {
+    Cat: myPosition,
+    Doggy: theirPositions,
+  };
+
   // console.log(users);
-  let position = new Animated.ValueXY(0, 0);
+  // let position = new Animated.ValueXY(0, 0);
 
   useEffect(() => {
     // console.log("enter to useEffect");
@@ -104,20 +114,30 @@ export default (props) => {
   );
 
   // to get current touching postion
-  function onPressHandler(event) {
+  async function onPressHandler(event) {
     // nativeEvent is touch location (find touching location)
     const { locationX, locationY } = event.nativeEvent;
 
+    // WRITE LOCATION IN FIRESTORE FROM HERE
+    await userActionsRef.add({
+      name: myself,
+      locationX,
+      locationY,
+      // save time in miliseconds
+      createdAt: new Date().getTime(),
+    });
+
     // 2nd arg updated the values of this.postion instance
-    Animated.timing(position, {
-      toValue: { x: locationX, y: locationY },
-      duration: 1000,
-      useNativeDriver: false,
-    }).start();
+    // Animated.timing(positions[myself], {
+    //   toValue: { x: locationX, y: locationY },
+    //   duration: 1000,
+    //   useNativeDriver: false,
+    // }).start();
+    // setMyPosition(myPosition);
   }
 
   const { isTyping, myself } = props;
-  console.log(myself);
+  console.log("myself", myself);
   const icons = {
     Cat: require("../../assets/cat.png"),
     Doggy: require("../../assets/dog.png"),
@@ -136,34 +156,26 @@ export default (props) => {
               return (
                 <AnimatedIcon
                   key={idx}
-                  location={position}
+                  name={myself}
+                  location={positions[myself]}
+                  // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
                   isTyping={isTyping}
                   iconImg={icons[myself]}
-                  // iconImg={
-                  //   idx === 0
-                  //     ? require("../../assets/cat.png")
-                  //     : require("../../assets/dog.png")
-                  // }
                 />
               );
             } else {
               return (
-                <Image
+                <AnimatedIcon
                   key={idx}
-                  style={styles.image}
-                  source={icons[user.name]}
-                ></Image>
+                  name={user.name}
+                  location={positions[user.name]}
+                  // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
+                  isTyping={isTyping}
+                  iconImg={icons[user.name]}
+                />
               );
             }
           })}
-
-          {/* <Animated.View style={this.position.getLayout()}>
-              <Image
-                source={require("../../assets/dog.png")}
-                style={[isTyping ? styles.imageWithTyping : styles.image]}
-                
-              />
-            </Animated.View> */}
         </View>
       </TouchableWithoutFeedback>
     </View>

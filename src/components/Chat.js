@@ -29,16 +29,14 @@ if (firebase.apps.length === 0) {
 const db = firebase.firestore();
 // chat collection reference (we interact with reference in useEffect)
 const chatsRef = db.collection("chats");
+const typingActionRef = db.collection("typingAction");
 
 export default function Chat(props) {
   // we declare state here
   const [user, setUser] = useState(null);
-  // const [name, setName] = useState("");
   const [messages, setMessages] = useState([]);
-  
-  // passed from parent to change the state in parent 
+  // passed from parent to change the state in parent
   const { setIsTyping } = props;
-
 
   useEffect(() => {
     readUser();
@@ -104,7 +102,33 @@ export default function Chat(props) {
     //  HERE WE'RE SENDING THE DATA
     await Promise.all(writes);
     setIsTyping(false);
+
+    // SEND END OF TYPING ACTION TO FIRESTORE
+    await typingActionRef.add({
+      name: user.name,
+      typing: false,
+      // save time in miliseconds
+      createdAt: new Date().getTime(),
+    });
+
     Keyboard.dismiss();
+  }
+
+  async function sendTypingAction(event) {
+    // WRITE TYPING ACTION IN FIRESTORE FROM HERE
+    if (event.length === 1) {
+      await typingActionRef.add({
+        name: user.name,
+        typing: true,
+        // save time in miliseconds
+        createdAt: new Date().getTime(),
+      });
+    }
+    if (event.length !== 0) {
+      // SEND BEGINNGING TO TYPING TO FIRESTORE
+
+      setIsTyping(true);
+    }
   }
 
   return (
@@ -112,11 +136,12 @@ export default function Chat(props) {
       messages={messages}
       user={user}
       onSend={handleSend}
-      onInputTextChanged={(event) => {
-        if (event.length !== 0) {
-          setIsTyping(true);
-        }
-      }}
+      // onInputTextChanged={(event) => {
+      //   if (event.length !== 0) {
+      //     setIsTyping(true);
+      //   }
+      // }}
+      onInputTextChanged={async (event) => sendTypingAction(event)}
     />
   );
 }

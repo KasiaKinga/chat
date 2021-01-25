@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React, { Component, useEffect, useState } from "react";
 import {
   // Platform,
   StyleSheet,
@@ -30,16 +30,20 @@ if (firebase.apps.length === 0) {
 const db = firebase.firestore();
 // chat collection reference (we interact with reference in useEffect)
 const userActionsRef = db.collection("userActions");
+const typingActionRef = db.collection("typingAction");
 
 export default (props) => {
+  const [isTyping, setIsTyping] = useState(false);
+
   useEffect(() => {
+    //// LITENING CHANGING THE LOCATION
     const unsubscribe = userActionsRef.onSnapshot((querySnapshot) => {
       const usersFirestore = querySnapshot
         .docChanges()
         .filter(({ type }) => type === "added")
         .map(({ doc }) => {
           const userActions = doc.data();
-          console.log("userActions", userActions);
+          // console.log("userActions", userActions);
           return userActions;
         })
         // we want the lastest action
@@ -47,24 +51,61 @@ export default (props) => {
 
       // access the most recent move
       const returnedUserActions = usersFirestore.pop();
-      if (props.name === returnedUserActions.name) {
-        Animated.timing(props.location, {
-          toValue: {
-            x: returnedUserActions.locationX,
-            y: returnedUserActions.locationY,
-          },
-          duration: 1000,
-          useNativeDriver: false,
-        }).start();
+      if (returnedUserActions !== undefined) {
+        if (props.name === returnedUserActions.name) {
+          // props.location bind the animation instance with the 'icon'
+          Animated.timing(props.location, {
+            toValue: {
+              x: returnedUserActions.locationX,
+              y: returnedUserActions.locationY,
+            },
+            duration: 1000,
+            useNativeDriver: false,
+          }).start();
+        }
       }
-
-      console.log("usersFirestore", usersFirestore);
       // appendUsers(usersFirestore);
     });
+
+    //// LITENING TYPING
+    const unsubscribeTyping = typingActionRef.onSnapshot((querySnapshot) => {
+      const userTypingFirestore = querySnapshot
+        .docChanges()
+        .filter(({ type }) => type === "added")
+        .map(({ doc }) => {
+          const userTyping = doc.data();
+          // console.log("HERE userTyping", userTyping);
+          return userTyping;
+        });
+      // console.log("heeeereee userTypingFirestore", userTypingFirestore);
+      if (props.name === userTypingFirestore[0].name) {
+        setIsTyping(userTypingFirestore[0].typing);
+      }
+
+      // we want the lastest action
+      // .sort((a, b) => a.createdAt - b.createdAt);
+
+      // access the most recent move
+      // const returnedUserActions = usersFirestore.pop();
+      // if (returnedUserActions !== undefined) {
+      //   if (props.name === returnedUserActions.name) {
+      //     Animated.timing(props.location, {
+      //       toValue: {
+      //         x: returnedUserActions.locationX,
+      //         y: returnedUserActions.locationY,
+      //       },
+      //       duration: 1000,
+      //       useNativeDriver: false,
+      //     }).start();
+      //   }
+      // }
+      // appendUsers(usersFirestore);
+    });
+
     return () => unsubscribe();
   }, []);
 
-  const { location, isTyping, iconImg, name } = props;
+  const { location, iconImg } = props;
   // getLayout gives current location for element
   return (
     <Animated.View style={location.getLayout()}>

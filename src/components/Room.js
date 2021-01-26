@@ -46,10 +46,10 @@ export default (props) => {
   const myPosition = useRef(new Animated.ValueXY(0, 0)).current;
   const theirPositions = useRef(new Animated.ValueXY(0, 0)).current;
 
-  const positions = {
-    Cat: myPosition,
-    Doggy: theirPositions,
-  };
+  // const positions = {
+  //   Cat: myPosition,
+  //   Doggy: theirPositions,
+  // };
 
   // console.log(users);
   // let position = new Animated.ValueXY(0, 0);
@@ -174,7 +174,7 @@ export default (props) => {
                 <AnimatedIcon
                   key={idx}
                   name={myself}
-                  location={positions[myself]}
+                  location={myPosition}
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
                   // isTyping={isTyping}
                   iconImg={icons[myself]}
@@ -186,7 +186,7 @@ export default (props) => {
                 <AnimatedIcon
                   key={idx}
                   name={user.name}
-                  location={positions[user.name]}
+                  location={theirPositions}
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
                   // isTyping={isTyping}
                   iconImg={icons[user.name]}

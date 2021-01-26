@@ -151,6 +151,13 @@ export default (props) => {
             style={styles.room}
           />
 
+          <View style={styles.backgroundHeadphones}>
+            <Image
+              source={require("../../assets/headphones.png")}
+              style={styles.headphones}
+            />
+          </View>
+
           {users.map((user, idx) => {
             if (user.name === myself) {
               return (
@@ -213,5 +220,25 @@ const styles = StyleSheet.create({
     // padding: 10,
     // resizeMode: "cover",
     // justifyContent: "center",
+  },
+  headphones: {
+    width: 50,
+    height: 50,
+    // marginTop: 230,
+    // position: "absolute",
+  },
+  backgroundHeadphones: {
+    position: "absolute",
+    // borderWidth: 0.25,
+    // borderColor: "white",
+    // display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "gray",
+    borderRadius: 40,
+    width: 70,
+    height: 70,
+    marginTop: 255,
+    marginLeft: 8,
   },
 });

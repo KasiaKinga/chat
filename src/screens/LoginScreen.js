@@ -1,10 +1,13 @@
-import { StyleSheet, View, TextInput, Text, Button } from "react-native";
+import { StyleSheet, View, TextInput, Text } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
 import { StatusBar } from "expo-status-bar";
+import { Button } from "react-native-paper";
 
 import * as firebase from "firebase";
 import "firebase/firestore";
+import HighFive from "../components/HighFive";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBImapFQjEogjB0ydnBdiS1sw5lrh9nEos",
   authDomain: "chat-ff89f.firebaseapp.com",
@@ -80,21 +83,24 @@ export default function App({ navigation }) {
     await AsyncStorage.removeItem("user");
     setUser(null);
     setName("");
-
-    usersRef
-      .doc(userId)
-      .delete()
-      .then(function () {
-        console.log("Document successfully deleted!");
-      })
-      .catch(function (error) {
-        console.error("Error removing document: ", error);
-      });
+    if (userId) {
+      usersRef
+        .doc(userId)
+        .delete()
+        .then(function () {
+          console.log("Document successfully deleted!");
+        })
+        .catch(function (error) {
+          console.error("Error removing document: ", error);
+        });
+    }
   }
 
   if (!user) {
     return (
       <View style={styles.container}>
+        <HighFive />
+
         <TextInput
           style={styles.input}
           placeholder="Enter your name"
@@ -102,7 +108,18 @@ export default function App({ navigation }) {
           // event we're listening
           onChangeText={setName}
         />
-        <Button onPress={handlePress} title="Enter the chat" />
+        <View style={{ marginTop: 20 }}>
+          <Button
+            onPress={handlePress}
+            mode="contained"
+            // title="Enter the chat"
+            // buttonStyle={styles.button}
+            // color="purple"
+            // color="#f194ff"
+          >
+            Enter the chat
+          </Button>
+        </View>
       </View>
     );
   }
@@ -110,15 +127,33 @@ export default function App({ navigation }) {
   // return <GiftedChat messages={messages} user={user} onSend={handleSend} />;
   return (
     <View style={styles.container}>
-      <Text>Hello {user.name}!</Text>
+      <HighFive />
+      <Text
+        style={{
+          fontFamily: "Optima",
+          fontSize: 40,
+          marginBottom: 30,
+          marginTop: 30,
+        }}
+      >
+        Hello {user.name}!
+      </Text>
       <StatusBar style="auto" />
       <Button
         // onSend={handleSend}
+        mode="contained"
         onPress={() => navigation.navigate("Study Room", { me: user })}
-        title="Enter Study Room"
-      />
+        // title="Enter Study Room"
+        buttonStyle={styles.button}
+      >
+        Enter to Study Room
+      </Button>
 
-      <Button title="Logout" onPress={async () => logout()} />
+      <View style={{ bottom: 100, position: "absolute" }}>
+        <Button mode="outlined" onPress={async () => logout()}>
+          Log out
+        </Button>
+      </View>
     </View>
   );
 }
@@ -138,5 +173,23 @@ const styles = StyleSheet.create({
     padding: 15,
     borderColor: "gray",
     marginBottom: 20,
+    borderRadius: 5,
   },
+  // button: {
+  // width: 300,
+  // height: 200,
+  // borderRadius: 5,
+  // backgroundColor: "purple",
+  // borderWidth: 2,
+  // marginRight: 40,
+  // marginLeft: 40,
+  // marginTop: 10,
+  // paddingTop: 10,
+  // paddingBottom: 10,
+  // backgroundColor: "black",
+  // borderRadius: 10,
+  // borderWidth: 1,
+  // borderColor: "black",
+  // borderColor: "#fff",
+  // },
 });

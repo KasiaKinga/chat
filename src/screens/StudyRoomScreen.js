@@ -2,19 +2,27 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import Chat from "../components/Chat";
 import Room from "../components/Room";
+import HeadphoneOn from "../components/HeadphoneOn";
 
 const StudyRoomScreen = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  console.log(isListening);
   // const [users, setUsers] = useState([]);
   const myself = navigation.state.params.me.name;
 
   return (
     <View style={styles.container}>
       <View style={styles.containerForRoom}>
-        <Room isTyping={isTyping} myself={myself} />
+        <Room
+          isTyping={isTyping}
+          myself={myself}
+          isListening={isListening}
+          setIsListening={setIsListening}
+        />
       </View>
       <View style={styles.containerForChat}>
-        <Chat setIsTyping={setIsTyping} />
+        {isListening ? <HeadphoneOn /> : <Chat setIsTyping={setIsTyping} />}
       </View>
     </View>
   );
@@ -32,6 +40,11 @@ const styles = StyleSheet.create({
   containerForChat: {
     flex: 2,
     marginTop: 10,
+  },
+  containerToDisabled: {
+    width: 100,
+    height: 100,
+    backgroundColor: "yellow",
   },
 });
 

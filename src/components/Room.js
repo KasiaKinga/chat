@@ -8,8 +8,10 @@ import {
   TouchableWithoutFeedback,
   Image,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import AnimatedIcon from "./AnimatedIcon";
+// import UseAnimations from "react-useanimations";
 // import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 //// firebase
@@ -39,6 +41,7 @@ export default (props) => {
   // export default class App extends Component {
   // not state! instance of animation
   const [users, setUsers] = useState([]);
+  // const [isListening, setIsListening] = useState(false);
 
   const myPosition = useRef(new Animated.ValueXY(0, 0)).current;
   const theirPositions = useRef(new Animated.ValueXY(0, 0)).current;
@@ -126,17 +129,23 @@ export default (props) => {
       // save time in miliseconds
       createdAt: new Date().getTime(),
     });
-
-    // 2nd arg updated the values of this.postion instance
-    // Animated.timing(positions[myself], {
-    //   toValue: { x: locationX, y: locationY },
-    //   duration: 1000,
-    //   useNativeDriver: false,
-    // }).start();
-    // setMyPosition(myPosition);
   }
 
-  const { myself } = props;
+  // to get current touching postion
+  function onDisabledChat() {
+    setIsListening(!isListening);
+  }
+  // nativeEvent is touch location (find touching location)
+  // WRITE LOCATION FOR DISABLED CHAT IN FIRESTORE FROM HERE
+  // await userActionsRef.add({
+  //   name: myself,
+  //   locationX,
+  //   locationY,
+  //   // save time in miliseconds
+  //   createdAt: new Date().getTime(),
+  // });
+
+  const { myself, isListening, setIsListening } = props;
   // console.log("myself", myself);
   const icons = {
     Cat: require("../../assets/cat.png"),
@@ -150,6 +159,14 @@ export default (props) => {
             source={require("../../assets/living-room.jpg")}
             style={styles.room}
           />
+          <TouchableOpacity onPress={onDisabledChat}>
+            <View style={styles.backgroundHeadphones}>
+              <Image
+                source={require("../../assets/headphones.png")}
+                style={styles.headphones}
+              />
+            </View>
+          </TouchableOpacity>
 
           {users.map((user, idx) => {
             if (user.name === myself) {
@@ -161,6 +178,7 @@ export default (props) => {
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
                   // isTyping={isTyping}
                   iconImg={icons[myself]}
+                  isListening={isListening}
                 />
               );
             } else {
@@ -172,6 +190,7 @@ export default (props) => {
                   // FIX - isTyping can't has teh same value ad isTyping in another AnimatedIcon
                   // isTyping={isTyping}
                   iconImg={icons[user.name]}
+                  isListening={false}
                 />
               );
             }
@@ -213,5 +232,25 @@ const styles = StyleSheet.create({
     // padding: 10,
     // resizeMode: "cover",
     // justifyContent: "center",
+  },
+  headphones: {
+    width: 50,
+    height: 50,
+    // marginTop: 230,
+    // position: "absolute",
+  },
+  backgroundHeadphones: {
+    position: "absolute",
+    // borderWidth: 0.25,
+    // borderColor: "white",
+    // display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "gray",
+    borderRadius: 40,
+    width: 70,
+    height: 70,
+    marginTop: 255,
+    marginLeft: 8,
   },
 });

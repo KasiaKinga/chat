@@ -8,7 +8,6 @@ import {
   ImageBackground,
 } from "react-native";
 import { TypingAnimation } from "react-native-typing-animation";
-import AnimatedIcon from "./AnimatedIcon";
 
 //// firebase
 import * as firebase from "firebase";
@@ -34,7 +33,6 @@ const typingActionRef = db.collection("typingAction");
 
 export default (props) => {
   const [isTyping, setIsTyping] = useState(false);
-  // const [isListening, setIsListening] = usetState(true);
 
   useEffect(() => {
     //// LITENING CHANGING THE LOCATION
@@ -118,12 +116,12 @@ export default (props) => {
     };
   }, []);
 
-  const { location, iconImg } = props;
+  const { location, iconImg, isListening } = props;
   // getLayout gives current location for element
   const headphone = require("../../assets/headphones.png");
   return (
     <Animated.View style={location.getLayout()}>
-      {false && <Image source={headphone} style={styles.headphone} />}
+      {isListening && <Image source={headphone} style={styles.headphone} />}
       {isTyping && (
         <TypingAnimation
           dotColor="black"

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import Chat from "../components/Chat";
 import Room from "../components/Room";
+import HeadphoneOn from "../components/HeadphoneOn";
 
 const StudyRoomScreen = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  console.log(isListening);
   // const [users, setUsers] = useState([]);
   const myself = navigation.state.params.me.name;
 
@@ -20,7 +22,7 @@ const StudyRoomScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.containerForChat}>
-        {isListening ? <View></View> : <Chat setIsTyping={setIsTyping} />}
+        {isListening ? <HeadphoneOn /> : <Chat setIsTyping={setIsTyping} />}
       </View>
     </View>
   );

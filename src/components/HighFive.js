@@ -28,6 +28,5 @@ const styles = StyleSheet.create({
   company: {
     fontFamily: "Bradley Hand",
     fontSize: 40,
-    // marginBottom: 80,
   },
 });

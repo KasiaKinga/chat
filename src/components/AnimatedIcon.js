@@ -1,15 +1,11 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  View,
   Animated,
-  TouchableWithoutFeedback,
   Image,
-  ImageBackground,
 } from "react-native";
 import { TypingAnimation } from "react-native-typing-animation";
 
-//// firebase
 import * as firebase from "firebase";
 import "firebase/firestore";
 const firebaseConfig = {
@@ -20,14 +16,12 @@ const firebaseConfig = {
   messagingSenderId: "222601217947",
   appId: "1:222601217947:web:887ddfca6594c5bd19433e",
 };
-// to avoid creating the app every time we save
+
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
-// LogBox.ignoreWarnings(["Setting a timer for a long period of time"]);
-// it's to access firebase quickly
+
 const db = firebase.firestore();
-// chat collection reference (we interact with reference in useEffect)
 const userActionsRef = db.collection("userActions");
 const typingActionRef = db.collection("typingAction");
 
@@ -42,7 +36,6 @@ export default (props) => {
         .filter(({ type }) => type === "added")
         .map(({ doc }) => {
           const userActions = doc.data();
-          // console.log("userActions", userActions);
           return userActions;
         })
         // we want the lastest action
@@ -53,7 +46,6 @@ export default (props) => {
 
       if (returnedUserActions !== undefined) {
         if (props.name === returnedUserActions.name) {
-          // props.location bind the animation instance with the 'icon'
           Animated.timing(props.location, {
             toValue: {
               x: returnedUserActions.locationX,
@@ -64,7 +56,6 @@ export default (props) => {
           }).start();
         }
       }
-      // appendUsers(usersFirestore);
     });
 
     //// LITENING TYPING
@@ -74,40 +65,17 @@ export default (props) => {
         .filter(({ type }) => type === "added")
         .map(({ doc }) => {
           const userTyping = doc.data();
-          // console.log("HERE userTyping", userTyping);
           return userTyping;
         })
         .sort((a, b) => a.createdAt - b.createdAt);
-      // we want the lastest action
-
       // access the most recent move
       const returnedTypingAction = userTypingFirestore.pop();
-      // console.log("returnObj", returnedTypingAction);
+      
       if (returnedTypingAction !== undefined) {
-        // console.log("hi");
         if (props.name === returnedTypingAction.name) {
           setIsTyping(returnedTypingAction.typing);
-          // console.log("AAAAAAA", returnedTypingAction.typing);
         }
       }
-      // we want the lastest action
-      // .sort((a, b) => a.createdAt - b.createdAt);
-
-      // access the most recent move
-      // const returnedUserActions = usersFirestore.pop();
-      // if (returnedUserActions !== undefined) {
-      //   if (props.name === returnedUserActions.name) {
-      //     Animated.timing(props.location, {
-      //       toValue: {
-      //         x: returnedUserActions.locationX,
-      //         y: returnedUserActions.locationY,
-      //       },
-      //       duration: 1000,
-      //       useNativeDriver: false,
-      //     }).start();
-      //   }
-      // }
-      // appendUsers(usersFirestore);
     });
 
     return () => {
@@ -117,8 +85,8 @@ export default (props) => {
   }, []);
 
   const { location, iconImg, isListening } = props;
-  // getLayout gives current location for element
   const headphone = require("../../assets/headphones.png");
+  
   return (
     <Animated.View style={location.getLayout()}>
       {isListening && <Image source={headphone} style={styles.headphone} />}
@@ -138,7 +106,6 @@ export default (props) => {
       <Image
         source={iconImg}
         style={styles.image}
-        // style={[isTyping ? styles.imageWithTyping : styles.image]}
       />
     </Animated.View>
   );

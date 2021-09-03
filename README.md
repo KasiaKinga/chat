@@ -1,5 +1,7 @@
 # Company
 
+<img src="./company_readme.gif" width="300px">
+
 Real time mobile app to chat and hang out in a virtual study room. The idea was motivated by the new way of remote studying. Although we stay connected through Slack and Zoom, we might feel isolated. The goal of the app is to recreate situations from the study room in the coding school where students can chat, hang out, study together and simply be around each other.
 
 The app allows logged-in users to control an assigned icon in a virtual study room by freely moving themselves around and chat. One additional functionality is disabling the chat. 

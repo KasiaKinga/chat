@@ -7,9 +7,8 @@ import HeadphoneOn from "../components/HeadphoneOn";
 const StudyRoomScreen = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  console.log(isListening);
-  // const [users, setUsers] = useState([]);
   const myself = navigation.state.params.me.name;
+  console.log("myself", myself)
 
   return (
     <View style={styles.container}>

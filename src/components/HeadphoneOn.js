@@ -1,6 +1,6 @@
 import React from "react";
 import LottieView from "lottie-react-native";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 
 export default class HeadphoneOn extends React.Component {
   render() {
@@ -11,7 +11,6 @@ export default class HeadphoneOn extends React.Component {
           autoPlay
           loop
         />
-        {/* <Text>Chat disabled</Text> */}
       </View>
     );
   }

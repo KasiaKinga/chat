@@ -22,3 +22,5 @@ The app allows logged-in users to control an assigned icon in a virtual study ro
 - [React Native Animations](https://reactnative.dev/) 
 - [Material-UI](https://material-ui.com/) - for styles
 - [Lottie](https://airbnb.design/lottie/) - library of animated images
+
+
